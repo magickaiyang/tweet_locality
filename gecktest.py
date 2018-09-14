@@ -1,26 +1,32 @@
 from selenium import webdriver
 import json
 
-def get_result(lines):
+def get_result():
     input_file = open("input.txt", "r")
     output_file = open("output.txt", "w")
     input_lines = input_file.readlines()
-  
+
     browser = webdriver.Firefox()
     browser.get('http://geotxt.org/v2/')
 
     #sending input
-    input_text = browser.find_element_by_id('inputText')
+    input_text = browser.find_element_by_id('queryText')
 
     for line in input_lines:
         input_text.send_keys(line)
-        input_text.submit()
+        submit_button = browser.find_element_by_id('submitTextButton')
+        submit_button.click()
 
         #getting result
         result_text = browser.find_elements_by_class_name('resultText')
+        result_value=""
+        for value in result_text:
+           result_value+=value
+
         #making string to json data
-        data = json.loads(result_text)
-        
+
+        data = json.loads(result_value)
+
         #getting required output and stored in a file
         output_file.write(get_toponym(data))
         output_file.write(get_location(data))
@@ -38,5 +44,11 @@ def get_toponym(data):
 
     return toponym
 
+
 def get_location(data):
     return data['features']['0']['geometry']
+
+
+get_result()
+
+
