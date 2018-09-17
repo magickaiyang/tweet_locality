@@ -1,7 +1,9 @@
 import requests
 import json
+
+
 def get_toponym(data):
-    result=[]
+    result = []
     for places in data['features']:
         toponym = places['properties']['toponym']
         for hierarchy in places['properties']['hierarchy']['features']:
@@ -9,12 +11,12 @@ def get_toponym(data):
         result.append(toponym)
     return result
 
-def get_location(data):
-    result=[]
-    for places in data['features']:
-        result.append(places['geometry'])
-    return result
 
+def get_location(data):
+    result = []
+    for places in data['features']:
+        result.append(json.dumps(places['geometry']))
+    return result
 
 
 def main():
@@ -22,10 +24,16 @@ def main():
     output_file = open("output.txt", "w")
     input_lines = input_file.readlines()
     
-    option=input('Please choose from the following two NER engines and multiple methods:\n(1) "gates" (without quotation marks) for Gate and our improved ranking scheme\n(2) "stanfords" for Stanford NER and our improved ranking scheme\n(3) "gate" for default GeoNames ranking scheme with each NER engine\n(4) "stanford" for default GeoNames ranking scheme with each NER engine\n(5) "gateh" to enable place name disambiguation\n(6) "stanfordh" to enable place name disambiguation\n')
+    option = raw_input('Please choose from the following two NER engines and multiple methods:\n'
+                 '(1) "gates" (without quotation marks) for Gate and our improved ranking scheme\n'
+                 '(2) "stanfords" for Stanford NER and our improved ranking scheme\n'
+                 '(3) "gate" for default GeoNames ranking scheme with each NER engine\n'
+                 '(4) "stanford" for default GeoNames ranking scheme with each NER engine\n'
+                 '(5) "gateh" to enable place name disambiguation\n'
+                 '(6) "stanfordh" to enable place name disambiguation\n')
     input_file.close()
     
-    m_parameter=''
+    m_parameter = ''
     
     if option == '1' or option == 'gates':
         m_parameter = 'm=gates&q='
@@ -53,7 +61,7 @@ def main():
         toponyms = get_toponym(data)
         locations = get_location(data)
         
-        for i in range(0,len(toponyms)):
+        for i in range(0, len(toponyms)):
             output_file.write(str(i)+": \n"+toponyms[i]+"\n"+str(locations[i])+"\n\n")
 
     output_file.close()
