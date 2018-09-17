@@ -9,7 +9,6 @@ def get_toponym(data):
         result.append(toponym)
     return result
 
-#test comment
 def get_location(data):
     result=[]
     for places in data['features']:
