@@ -25,7 +25,7 @@ def get_result():
 
         #making string to json data
 
-        data = json.loads(result_value)
+        data = json.dumps(result_value)
 
         #getting required output and stored in a file
         output_file.write(get_toponym(data))
