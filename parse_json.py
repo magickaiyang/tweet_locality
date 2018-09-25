@@ -1,6 +1,24 @@
 import requests
 import json
 
+M_PARAMETER = 'm=gates&q='
+
+
+def read_line(line):
+    request_line = 'http://geotxt.org/v2/api/geotxt.json?' + M_PARAMETER + line
+    print(request_line)
+    r = requests.get(request_line)
+    data = r.json()
+
+    toponyms = get_toponym(data)
+    locations = get_location(data)
+
+    result = ""
+    for i in range(0, len(toponyms)):
+        result += (str(i) + ": \n" + toponyms[i] + "\n" + str(locations[i]) + "\n\n")
+
+    return result
+
 
 def get_toponym(data):
     result = []
@@ -23,7 +41,7 @@ def main():
     input_file = open("input.txt", "r")
     output_file = open("output.txt", "w")
     input_lines = input_file.readlines()
-    
+
     option = raw_input('Please choose from the following two NER engines and multiple methods:\n'
                  '(1) "gates" (without quotation marks) for Gate and our improved ranking scheme\n'
                  '(2) "stanfords" for Stanford NER and our improved ranking scheme\n'
@@ -32,39 +50,29 @@ def main():
                  '(5) "gateh" to enable place name disambiguation\n'
                  '(6) "stanfordh" to enable place name disambiguation\n')
     input_file.close()
-    
-    m_parameter = ''
-    
+
+
     if option == '1' or option == 'gates':
-        m_parameter = 'm=gates&q='
+        M_PARAMETER = 'm=gates&q='
     elif option == '2' or option == 'stanfords':
-        m_parameter = 'm=stanfords&q='
+        M_PARAMETER = 'm=stanfords&q='
     elif option == '3' or option == 'gate':
-        m_parameter = 'm=gate&q='
+        M_PARAMETER = 'm=gate&q='
     elif option == '4' or option == 'stanford':
-        m_parameter = 'm=stanford&q='
+        M_PARAMETER = 'm=stanford&q='
     elif option == '5' or option == 'gateh':
-        m_parameter = 'm=gateh&q=' 
+        M_PARAMETER = 'm=gateh&q='
     elif option == '6' or option == 'stanfordh':
-        m_parameter = 'm=stanfordh&q='
+        M_PARAMETER = 'm=stanfordh&q='
     else:
         print("invalid input, program exits")
         return
-    
+
     for line in input_lines:
         output_file.write(line)
-        request_line = 'http://geotxt.org/v2/api/geotxt.json?'+m_parameter+line
-        print(request_line)
-        r = requests.get(request_line)
-        data = r.json()
-
-        toponyms = get_toponym(data)
-        locations = get_location(data)
-        
-        for i in range(0, len(toponyms)):
-            output_file.write(str(i)+": \n"+toponyms[i]+"\n"+str(locations[i])+"\n\n")
+        output_file.write(read_line(line))
 
     output_file.close()
-    
-    
+
+
 main()

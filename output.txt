@@ -1,25 +1,25 @@
 I live in Lafayette.
 0: 
-Lafayette
+Lafayette, Lafayette Parish, Louisiana, United States, North America
 {"type": "Point", "coordinates": [-92.01984, 30.22409]}
 
 I love Purdue
 The weather in Florida is so good.
 0: 
-Florida
+Florida, United States, North America
 {"type": "Point", "coordinates": [-82.5001, 28.75054]}
 
 I came from Wuhan but I am now living in West Lafayette
 0: 
-West Lafayette
+West Lafayette, Tippecanoe County, Indiana, United States, North America
 {"type": "Point", "coordinates": [-86.90807, 40.42587]}
 
 1: 
-Wuhan
+Wuhan, Hubei Sheng, China, Asia
 {"type": "Point", "coordinates": [114.26667, 30.58333]}
 
 I live in the U.S.
 0: 
-United States
+United States, North America
 {"type": "Point", "coordinates": [-98.5, 39.76]}
 
