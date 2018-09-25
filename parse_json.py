@@ -1,7 +1,13 @@
 import requests
 import json
+import tweepy
 
 M_PARAMETER = 'm=gates&q='
+
+
+class MyStreamListener(tweepy.StreamListener):
+    def on_status(self, status):
+        print(status.text)
 
 
 def read_line(line):
