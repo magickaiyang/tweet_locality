@@ -1,30 +1,29 @@
+import parser
 import tweepy
-
 
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
-        print(status.text)
+        location = status.coordinates.coordinates
+        text = status.text
+        print(str(status.user.name)+": "+str(status.text))
 
 
 consumer_token = "M4RsO5BPSrhrqX4dTtVsjLKnF"
 consumer_secret = "tywdiv9Y4XimMzoJyeYJ85C3pKnRDXvlJpHt3nvEjgzqgEJv0P"
+access_token = "1042434964334305281-BZRy2GIEUmYmyp4KVavu6YesSaMFe9"
+access_secret = "v4Z7x17IH7gOhIwgzbYSPgZO8J73EknuwlqqNFqZs01vo"
+
 
 auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
-auth.set_access_token(consumer_token, consumer_secret)
+auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
 
-print("please visit: %s" % auth.get_authorization_url())
-verifier = input("after you grant access what is the verifier code? ")
-auth.get_access_token(verifier)
-
-public_tweets = api.home_timeline()
-for tweet in public_tweets:
-    print(tweet.text)
-
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
-LOCATION = [5.0770049095, 47.2982950435, 15.0403900146, 54.9039819757]
-# LOCATION = [-88.099701, 37.771744, -84.784607, 37.771744]
+LOCATION = [-86.990100, 40.332937, -86.765386, 40.474450]
+# two longitude/latitude pairs, with the first pair denoting the southwest corner of the box
+# west lafayette and lafayette [-86.990100, 40.332937, -86.765386, 40.474450]
 myStream.filter(locations=LOCATION)
+
