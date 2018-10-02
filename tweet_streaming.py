@@ -1,6 +1,7 @@
 import parser
 import tweepy
 
+
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
@@ -13,7 +14,6 @@ consumer_token = "M4RsO5BPSrhrqX4dTtVsjLKnF"
 consumer_secret = "tywdiv9Y4XimMzoJyeYJ85C3pKnRDXvlJpHt3nvEjgzqgEJv0P"
 access_token = "1042434964334305281-BZRy2GIEUmYmyp4KVavu6YesSaMFe9"
 access_secret = "v4Z7x17IH7gOhIwgzbYSPgZO8J73EknuwlqqNFqZs01vo"
-
 
 auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
 auth.set_access_token(access_token, access_secret)
