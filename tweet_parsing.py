@@ -92,7 +92,6 @@ def main():
     myStream.filter(locations=LOCATION)
 
 
-
 main()
 
 for text in texts:

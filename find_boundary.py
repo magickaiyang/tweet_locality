@@ -9,10 +9,9 @@ def locate(lon, lat, country_fp, state_fp, county_fp):
     crf = shapefile.Reader(country_fp)
     cf = shapefile.Reader(county_fp)
 
-
-    #sf = shapefile.Reader("venv/shapefiles/tl_2017_us_state/tl_2017_us_state")
+    # sf = shapefile.Reader("venv/shapefiles/tl_2017_us_state/tl_2017_us_state")
     # cf = shapefile.Reader("venv/shapefiles/TM_WORLD_BORDERS-0.3/TM_WORLD_BORDERS-0.3")
-    #cf = shapefile.Reader("venv/shapefiles/tl_2016_us_county/tl_2016_us_county")
+    # cf = shapefile.Reader("venv/shapefiles/tl_2016_us_county/tl_2016_us_county")
 
     shapes_states = sf.shapes()
     state_polygons = {}
@@ -33,9 +32,7 @@ def locate(lon, lat, country_fp, state_fp, county_fp):
     for i, record in enumerate(crf.records()):
         country_polygons[record[3]] = Polygon(shapes_countries[i].points)
 
-    #print(country_polygons[0])
-
-
+    # print(country_polygons[0])
 
     this_county = ""
     this_country = ""
