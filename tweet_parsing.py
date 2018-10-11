@@ -3,6 +3,7 @@ import json
 import requests
 import tweepy
 
+from detect_bot import *
 
 MAX_TWEETS = 5
 M_PARAMETER = 'm=gates&q='
@@ -23,16 +24,19 @@ class MyStreamListener(tweepy.StreamListener):
 
         location = str([])
 
-        if status.place:
-            location = str(status.place.bounding_box.coordinates)
-            print(location)
+        username = status.user.screen_name
+        score = detectbot(username)
+        print(username + " - score is "+str(score))
+        if score < 2.5:
+            if status.place:
+                location = str(status.place.bounding_box.coordinates)
+                print(location)
 
-        text = status.text
-        texts.append(text)
-        print(status.text)
-        locations.append(location)
-        self.num_tweets += 1
-
+            text = status.text
+            texts.append(text)
+            print(status.text)
+            locations.append(location)
+            self.num_tweets += 1
 
 def read_line(line):
     request_line = 'http://geotxt.org/v2/api/geotxt.json?' + M_PARAMETER + line
