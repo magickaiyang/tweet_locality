@@ -1,12 +1,12 @@
 from parse_Geotxt import *
-import tweepy
 from tweet_locations import *
 from detect_bot import *
+import tweepy
 
 MAX_TWEETS = 5
-M_PARAMETER = 'm=gates&q='
-output_file = open("tweet_output.txt", "w")
-location_file = open("location_output.txt", "w")
+# M_PARAMETER = 'm=gates&q='
+# output_file = open("tweet_output.txt", "w")
+# location_file = open("location_output.txt", "w")
 texts = []
 locations = []
 
@@ -92,11 +92,11 @@ def main():
 
 main()
 
-for text in texts:
-    output_file.write(parse_text(text))
-for location in locations:
-    location_file.write(location+"\n")
-
-output_file.close()
-location_file.close()
+# for text in texts:
+#     output_file.write(parse_text(text,"2"))
+# for location in locations:
+#     location_file.write(location+"\n")
+#
+# output_file.close()
+# location_file.close()
 
