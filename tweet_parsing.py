@@ -1,8 +1,6 @@
-import json
-
-import requests
+from parse_Geotxt import *
 import tweepy
-
+from tweet_locations import *
 from detect_bot import *
 
 MAX_TWEETS = 5
@@ -30,47 +28,47 @@ class MyStreamListener(tweepy.StreamListener):
         if score < 2.5:
             if status.place:
                 location = str(status.place.bounding_box.coordinates)
-                print(location)
+                #print(location)
 
+            print(tweet_country(status))
             text = status.text
             texts.append(text)
             print(status.text)
             locations.append(location)
             self.num_tweets += 1
 
-def read_line(line):
-    request_line = 'http://geotxt.org/v2/api/geotxt.json?' + M_PARAMETER + line
-    #print(request_line)
-    r = requests.get(request_line)
-    data = r.json()
 
-    toponyms = get_toponym(data)
-    locations = get_location(data)
-
-    result = ""
-    for i in range(0, len(toponyms)):
-        result += (str(i) + ": \n" + toponyms[i] + "\n" + str(locations[i]) + "\n\n")
-
-    if result=="":
-        result = "No Location in the text"
-    return result
-
-
-def get_toponym(data):
-    result = []
-    for places in data['features']:
-        toponym = places['properties']['toponym']
-        for hierarchy in places['properties']['hierarchy']['features']:
-            toponym = toponym + ", " + hierarchy['properties']['toponym']
-        result.append(toponym)
-    return result
-
-
-def get_location(data):
-    result = []
-    for places in data['features']:
-        result.append(json.dumps(places['geometry']))
-    return result
+# def read_line(line):
+#     request_line = 'http://geotxt.org/v2/api/geotxt.json?' + M_PARAMETER + line
+#     #print(request_line)
+#     r = requests.get(request_line)
+#     data = r.json()
+#
+#     toponyms = get_toponym(data)
+#     locations = get_location(data)
+#
+#     result = ""
+#     for i in range(0, len(toponyms)):
+#         result += (str(i) + ": \n" + toponyms[i] + "\n" + str(locations[i]) + "\n\n")
+#
+#     if result=="":
+#         result = "No Location in the text"
+#     return result
+# def get_toponym(data):
+#     result = []
+#     for places in data['features']:
+#         toponym = places['properties']['toponym']
+#         for hierarchy in places['properties']['hierarchy']['features']:
+#             toponym = toponym + ", " + hierarchy['properties']['toponym']
+#         result.append(toponym)
+#     return result
+#
+#
+# def get_location(data):
+#     result = []
+#     for places in data['features']:
+#         result.append(json.dumps(places['geometry']))
+#     return result
 
 
 def main():
@@ -95,7 +93,7 @@ def main():
 main()
 
 for text in texts:
-    output_file.write(read_line(text))
+    output_file.write(parse_text(text))
 for location in locations:
     location_file.write(location+"\n")
 

@@ -25,14 +25,17 @@ def parse_text(line,option):
     r = requests.get(request_line)
     data = r.json()
 
-    toponyms = get_toponym(data)
-    locations = get_location(data)
+    return data
 
-    result = ""
-    for i in range(0, len(toponyms)):
-        result += (str(i) + ": \n" + toponyms[i] + "\n" + str(locations[i]) + "\n\n")
+    # toponyms = get_toponym(data)
+    # locations = get_location(data)
+    #
+    # result = ""
+    # for i in range(0, len(toponyms)):
+    #     result += (str(i) + ": \n" + toponyms[i] + "\n" + str(locations[i]) + "\n\n")
+    #
+    # return result
 
-    return result
 
 
 def get_toponym(data):
