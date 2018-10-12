@@ -57,7 +57,6 @@ def main():
                  '(6) "stanfordh" to enable place name disambiguation\n')
     input_file.close()
 
-
     if option == '1' or option == 'gates':
         M_PARAMETER = 'm=gates&q='
     elif option == '2' or option == 'stanfords':
