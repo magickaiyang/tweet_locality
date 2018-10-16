@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dbbc2116-2efc-4cb5-91b2-6d8217ec5b9b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Tweet_Locality.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Tweet_Locality.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cluster_dbscan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tweet_locations.py" beforeDir="false" afterPath="$PROJECT_DIR$/tweet_locations.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -48,58 +46,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="find_boundary.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/find_boundary.py">
+      <file leaf-file-name="dbscan_test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dbscan_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="782">
-              <caret line="47" column="25" selection-start-line="47" selection-start-column="25" selection-end-line="47" selection-end-column="25" />
+            <state relative-caret-position="272">
+              <caret line="16" selection-start-line="16" selection-end-line="19" selection-end-column="19" />
               <folding>
-                <element signature="e#0#43#0" expanded="true" />
+                <element signature="e#0#57#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tweet_parsing.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tweet_parsing.py">
+      <file leaf-file-name="cluster_dbscan.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cluster_dbscan.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
+            <state relative-caret-position="391">
+              <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="4" />
               <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="detect_bot.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/detect_bot.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="13" selection-start-column="13" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="parse_Geotxt.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/parse_Geotxt.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="36" column="19" selection-start-line="36" selection-start-column="19" selection-end-line="36" selection-end-column="19" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tweet_locations.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tweet_locations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
+                <element signature="e#128#167#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -130,6 +95,9 @@
         <option value="$PROJECT_DIR$/parse_Geotxt.py" />
         <option value="$PROJECT_DIR$/tweet_parsing.py" />
         <option value="$PROJECT_DIR$/tweet_locations.py" />
+        <option value="$PROJECT_DIR$/dbscan_test.py" />
+        <option value="$PROJECT_DIR$/cluster_coordinates.py" />
+        <option value="$PROJECT_DIR$/cluster_dbscan.py" />
       </list>
     </option>
   </component>
@@ -308,9 +276,9 @@
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" weight="0.32905984" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.3292683" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.24664879" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.38746437" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32791328" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32763532" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3988604" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -448,6 +416,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tweet_parsing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cluster_coordinates.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/parse_Geotxt.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="595">
@@ -460,7 +441,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tweet_locations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
+        <state relative-caret-position="51">
           <caret line="3" selection-start-line="3" selection-end-line="3" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -468,12 +449,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tweet_parsing.py">
+    <entry file="file://$PROJECT_DIR$/dbscan_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
+        <state relative-caret-position="272">
+          <caret line="16" selection-start-line="16" selection-end-line="19" selection-end-column="19" />
           <folding>
-            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#0#57#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-762174762/numpy/core/umath.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-285">
+          <caret line="4101" column="4" selection-start-line="4101" selection-start-column="4" selection-end-line="4101" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cluster_dbscan.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="4" />
+          <folding>
+            <element signature="e#128#167#0" expanded="true" />
           </folding>
         </state>
       </provider>
