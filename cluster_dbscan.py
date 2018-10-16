@@ -11,8 +11,8 @@ import numpy as np
 
 
 def make_clusters(coords):
-    X, labels_true = make_blobs()           # what do
-    X = StandardScaler().fit_transform(X)   # these do
+    X, labels_true = make_blobs()
+    X = StandardScaler().fit_transform(X)
     kms_per_radian = 6371.0088
     epsilon = 0.056 / kms_per_radian
     db = DBSCAN(eps=epsilon, min_samples=3, algorithm='ball_tree', metric='haversine').fit(np.radians(coords))
