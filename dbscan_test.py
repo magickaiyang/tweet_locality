@@ -43,11 +43,26 @@ def get_center_in_cluster(coordinates_list):
         lon_sum = lon_sum + coor[0]
         lat_sum = lat_sum + coor[1]
 
-    return (lon_sum / len(largest_cluster), lat_sum / len(largest_cluster))
+    avg = [lon_sum / len(largest_cluster), lat_sum / len(largest_cluster)]
+    print(avg)
+    difference_list = {}
+
+    # i'm trying to calculate the difference between all the points in largest cluster with the average
+    # to find the closest point
+    # and return that point!
+    for i in range(0, len(largest_cluster)):
+        difference_list.update(i: ([abs(coor[0]-avg[0]),abs(coor[1]-avg[1])]))
+
+    print difference_list
 
 
 
-result = get_center_in_cluster([[40.430023, -86.909103], [40.422363, -86.876688], [40.422363, -86.876668], [40.425368, -86.895309], [40.366318, -86.752251]])
+
+    return ()
+
+
+
+result = get_center_in_cluster([[40.430023, -86.909103], [40.422363, -86.876788], [40.422363, -86.876668], [40.425368, -86.895309], [40.366318, -86.752251]])
 print result
 
 
