@@ -31,29 +31,29 @@ def get_center_in_cluster(coordinates_list):
     print("cluster number: "+str(n_clusters))
 
 
-    # Testing, plot the graph
-    core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-    core_samples_mask[db.core_sample_indices_] = True
-
-    unique_labels = set(labels)
-    colors = [plt.cm.Spectral(each)
-                for each in np.linspace(0, 1, len(unique_labels))]
-
-    for k, col in zip(unique_labels, colors):
-        if k == -1:
-            col = [0, 0, 0, 1]
-        class_member_mask = (labels == k)
-
-        xy = centers[class_member_mask & core_samples_mask]
-        plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
-                               markeredgecolor = 'k', markersize = 14)
-
-        xy = centers[class_member_mask & ~core_samples_mask]
-        plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
-                               markeredgecolor = 'k', markersize = 6)
-
-    plt.title('Estimated number of clusters: %d' % n_clusters)
-    plt.show()
+    # # Testing, plot the graph
+    # core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+    # core_samples_mask[db.core_sample_indices_] = True
+    #
+    # unique_labels = set(labels)
+    # colors = [plt.cm.Spectral(each)
+    #             for each in np.linspace(0, 1, len(unique_labels))]
+    #
+    # for k, col in zip(unique_labels, colors):
+    #     if k == -1:
+    #         col = [0, 0, 0, 1]
+    #     class_member_mask = (labels == k)
+    #
+    #     xy = centers[class_member_mask & core_samples_mask]
+    #     plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+    #                            markeredgecolor = 'k', markersize = 14)
+    #
+    #     xy = centers[class_member_mask & ~core_samples_mask]
+    #     plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+    #                            markeredgecolor = 'k', markersize = 6)
+    #
+    # plt.title('Estimated number of clusters: %d' % n_clusters)
+    # plt.show()
 
     # end of testing
 
@@ -113,8 +113,8 @@ def get_center_in_cluster(coordinates_list):
 #print result
 
 def test_cluster():
-    centers = [[40.422363, -86.876788], [40.422363, -86.876683]]
-    X, labels_true = make_blobs(n_samples = [8,6],centers=centers, cluster_std = 0.0004,
+    centers = [[40, -86], [41, -87]]
+    X, labels_true = make_blobs(n_samples = [8,6],centers=centers, cluster_std = 0.00001,
                                 random_state=0)
     print X
     print("======")
@@ -124,6 +124,6 @@ def test_cluster():
 
 test_cluster()
 
-#result = get_center_in_cluster([[40.430023, -86.909103], [40.422363, -86.876788], [40.422363, -86.876683],
-#                                [40.425368, -86.895309], [40.366318, -86.752251]])
-#print result
+# result = get_center_in_cluster([[40.430023, -86.909103], [40.422363, -86.876788], [40.422363, -86.876683],
+#                                 [40.425368, -86.895309], [40.366318, -86.752251]])
+# print result
