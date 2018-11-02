@@ -13,6 +13,16 @@ def detectbot(username):
                           **twitter_app_auth)
 
 # Check a single account by screen name
-    result = bom.check_account(username)
+    try:
+        result = bom.check_account(username)
+        #print result['display_scores']['universal']
+        return result['display_scores']['universal']
+    except:
+        return 5
 
-    return result['display_scores']['english']
+    # result = bom.check_account(username)
+    #
+    # if result==None:
+    #     return None
+    # print result
+    # return result

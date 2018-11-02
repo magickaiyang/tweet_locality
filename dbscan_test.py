@@ -1,4 +1,5 @@
 from math import sqrt
+import pyodbc
 from sklearn.cluster import DBSCAN
 import numpy as np
 from collections import Counter
@@ -28,7 +29,7 @@ def get_center_in_cluster(coordinates_list):
     labels = db.labels_
 
     n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-    print("cluster number: "+str(n_clusters))
+    #print("cluster number: "+str(n_clusters))
 
 
     # # Testing, plot the graph
@@ -73,7 +74,7 @@ def get_center_in_cluster(coordinates_list):
         if labels[i] == largest_cluster_index:
             largest_cluster.append(centers[i].tolist())
 
-    print(largest_cluster)
+    #print(largest_cluster)
 
     return get_centermost_point(largest_cluster)
 
@@ -120,9 +121,6 @@ def test_cluster():
     print("======")
     print(get_center_in_cluster(X))
 
-
-
-test_cluster()
 
 # result = get_center_in_cluster([[40.430023, -86.909103], [40.422363, -86.876788], [40.422363, -86.876683],
 #                                 [40.425368, -86.895309], [40.366318, -86.752251]])
