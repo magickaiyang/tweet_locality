@@ -115,7 +115,7 @@ def get_center_in_cluster(coordinates_list):
 
 def test_cluster():
     centers = [[40, -86], [41, -87]]
-    X, labels_true = make_blobs(n_samples = [8,6],centers=centers, cluster_std = 0.00001,
+    X, labels_true = make_blobs(n_samples=[8, 6], centers=centers, cluster_std=0.00001,
                                 random_state=0)
     print X
     print("======")
