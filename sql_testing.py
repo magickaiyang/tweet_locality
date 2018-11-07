@@ -30,11 +30,19 @@ while row:
     row = cursor.fetchone()
 
 count = 0
+
+cursor = cnxn.cursor()
 for username in dicti.keys():
-    if len(dicti[username]["coordinates"]) > 1000:
+    if len(dicti[username]["coordinates"]) > 20:
         count = count + 1
         center = get_center_in_cluster(dicti[username]["coordinates"])
         dicti[username]["home"] = center
         print dicti[username]["home"]
+        # DO THIS FIRST
+        execute_line = "INSERT INTO [LOCALITY1].[dbo].[twitter_users] (screenname, lat, lon) VALUES ('" + username + "', '" + str(
+            dicti[username]["home"][0]) + "', '" + str(dicti[username]["home"][1]) + "')"
+        # print(execute_line)
+        cursor.execute(execute_line)
+        cnxn.commit()
 
 print (count)
