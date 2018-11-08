@@ -1,6 +1,13 @@
 import pyodbc
 from detect_bot import *
 from dbscan_test import *
+import re
+
+def check_time(time):
+    times = re.split("\W", time)
+    if times[3]<="04" or times[3]>="17":
+        return True
+    return False
 
 server = '128.46.137.201'
 database = 'LOCALITY1'
@@ -10,7 +17,7 @@ cnxn = pyodbc.connect(
     'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
 cursor = cnxn.cursor()
 
-cursor.execute("SELECT [created_at],[screen_name],[geo_lat],[geo_long],[tweet_text] FROM [LOCALITY1].[dbo].[Query]")
+cursor.execute("SELECT [created_at],[screen_name],[geo_lat],[geo_long],[tweet_text], [source] FROM [LOCALITY1].[dbo].[tweet_us_2016_01_03]")
 row = cursor.fetchone()
 
 dicti = {}
@@ -20,21 +27,26 @@ while row:
     username = row[1]
     coordinates = [row[2], row[3]]
     text = row[4]
+    source = row[5]
     # if detectbot(username)<=2.5:
+
     if username not in dicti.keys():
-        dicti.update({username: {"coordinates": [coordinates], "text": [text], "home": []}})
+        if ("Instagram" in source or "iPhone" in source or "Android" in source) and check_time(created_time):
+            dicti.update({username: {"coordinates": [coordinates], "text": [text], "home": []}})
+        else:
+            dicti.update({username: {"coordinates": [], "text": [text], "home": []}})
     else:
-        dicti[username]["coordinates"].append(coordinates)
-        dicti[username]["text"].append(text)
+        if ("Instagram" in source or "iPhone" in source or "Android" in source) and check_time(created_time):
+            dicti[username]["coordinates"].append(coordinates)
+            dicti[username]["text"].append(text)
+        else:
+            dicti[username]["text"].append(text)
 
     row = cursor.fetchone()
-
-count = 0
 
 cursor = cnxn.cursor()
 for username in dicti.keys():
     if len(dicti[username]["coordinates"]) > 20:
-        count = count + 1
         center = get_center_in_cluster(dicti[username]["coordinates"])
         dicti[username]["home"] = center
         print dicti[username]["home"]
@@ -45,4 +57,5 @@ for username in dicti.keys():
         cursor.execute(execute_line)
         cnxn.commit()
 
-print (count)
+
+
