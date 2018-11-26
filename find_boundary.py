@@ -61,7 +61,7 @@ def locate_county(lon, lat, county_fp):
     return this_county
 
 
-# print(locate_state(40.332937, -86.990100, 'venv/shapefiles/tl_2017_us_state/tl_2017_us_state'))
+# print(locate_state(45.016302, -79.609751, 'C:/_Study/crowdsourcing/tl_2017_us_state/tl_2017_us_state'))
 
 # print locate(40.332937, -86.990100, "venv/shapefiles/ne_110m_admin_0_countries/ne_110m_admin_0_countries",
 # "venv/shapefiles/tl_2017_us_state/tl_2017_us_state", "venv/shapefiles/tl_2016_us_county/tl_2016_us_county")
