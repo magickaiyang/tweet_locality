@@ -68,6 +68,18 @@ def build_usertable(data_table):
             cursor.execute(execute_line)
             cnxn.commit()
 
+    cursor = cnxn.cursor()
+    cursor1 = cnxn.cursor()
+    cursor.execute("SELECT [screenname] FROM [LOCALITY1].[dbo].[twitter_users]")
+    row = cursor.fetchone()
+    bot_score = 0
+    while row:
+        bot_score = detectbot(row)
+        execute_line = "INSERT INTO [LOCALITY1].[dbo].[twitter_users] (bot_score) VALUES ('" + str(bot_score) + "')"
+        cursor1.execute(execute_line)
+        cnxn.commit()
+        row = cursor.fetchone()
+
 
 def deduct_home_location():
     server = '128.46.137.201'
@@ -117,7 +129,10 @@ def deduct_home_location():
             print("Not possible!")
 
 
+
 deduct_home_location()
+
+
 
 
 
