@@ -1,7 +1,9 @@
 from parse_Geotxt import *
 from find_boundary import *
 
-
+# Function to parse data in the tweet object
+# and return if the coordinates in the given tweet
+# is Domestic or Global
 def tweet_country(tweet):
     if tweet.coordinates:
     #if tweet.place:

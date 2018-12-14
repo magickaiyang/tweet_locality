@@ -4,6 +4,12 @@ from dbscan_test import *
 import re
 from find_boundary import *
 
+#######################################
+# Note: This file has been changed a lot on the lab machine
+# without committing to GitHub
+###########################################
+
+
 def check_time(time):
     times = re.split("\W", time)
     if times[3]<="04" or times[3]>="20":

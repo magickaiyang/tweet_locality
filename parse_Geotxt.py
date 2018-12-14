@@ -3,7 +3,11 @@ import json
 
 M_PARAMETER = 'm=gates&q='
 
-def parse_text(line,option):
+
+# Function to display, ask user's option of geo parsing method,
+# and parse the text with selected option. (Default as gates)
+# Return the Geotext Json data
+def parse_text(line, option):
     if option == '1' or option == 'gates':
         M_PARAMETER = 'm=gates&q='
     elif option == '2' or option == 'stanfords':
@@ -27,17 +31,8 @@ def parse_text(line,option):
 
     return data
 
-    # toponyms = get_toponym(data)
-    # locations = get_location(data)
-    #
-    # result = ""
-    # for i in range(0, len(toponyms)):
-    #     result += (str(i) + ": \n" + toponyms[i] + "\n" + str(locations[i]) + "\n\n")
-    #
-    # return result
 
-
-
+# Function to get the toponym of given Geotext json data
 def get_toponym(data):
     result = []
     for places in data['features']:
@@ -48,6 +43,7 @@ def get_toponym(data):
     return result
 
 
+# Function to get the location of given Geotext json data
 def get_location(data):
     result = []
     for places in data['features']:
@@ -55,7 +51,8 @@ def get_location(data):
     return result
 
 
-#def main():
+# Main function to test the functions above, used the input.txt file
+# def main():
     # input_file = open("input.txt", "r")
     # output_file = open("output.txt", "w")
     # input_lines = input_file.readlines()
