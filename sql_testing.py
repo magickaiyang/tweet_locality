@@ -41,10 +41,12 @@ def build_usertable(data_table):
 
     # Write query and execute
     query = "SELECT [screen_name],[created_at],[geo_lat],[geo_long] FROM " + data_table
+    print query
     cursor.execute(query)
 
     # Start with getting the first row
     row = cursor.fetchone()
+    print row
 
     # Initialize the cluster(username as key, coordinates array as value)
     clusters = {}
@@ -60,11 +62,17 @@ def build_usertable(data_table):
         # if detectbot(username)<=2.5:
 
         # to find cluster for home location
+        # if check_time(created_time):
+        #     if username not in clusters.keys():
+        #         clusters.update({username: {"coordinates": [coordinates], "home": []}})
+        #     else:
+        #         clusters[username]["coordinates"].append(coordinates)
+
         if check_time(created_time):
             if username not in clusters.keys():
-                clusters.update({username: {"coordinates": [coordinates], "home": []}})
+                clusters.update({username: [coordinates]})
             else:
-                clusters[username]["coordinates"].append(coordinates)
+                clusters[username].append(coordinates)
 
         # cluster with text and coordinates, not needed temporarily
         # if username not in dicti.keys():
@@ -81,13 +89,23 @@ def build_usertable(data_table):
 
         row = cursor.fetchone()
 
-    # Write to csv file (need to change to other methods)
-    with open('users.csv', 'wb') as csv_file:
-        writer = csv.writer(csv_file)
-        for key, value in clusters.items():
-            writer.writerow([key, value])
 
-    return "csv file is complete"
+    cursor = cnxn.cursor()
+
+    for username in clusters.keys():
+        if len(clusters[username]) >= 20:
+            execute_line = "INSERT INTO [LOCALITY1].[localityedit].[user_coordinates] (users, coordinates) VALUES ('" + str(username)\
+                           + "', '" + str(clusters[username]) + "')"
+            print(execute_line)
+            cursor.execute(execute_line)
+            cnxn.commit()
+    # Write to csv file (need to change to other methods)
+    # with open('users.csv', 'wb') as csv_file:
+    #     writer = csv.writer(csv_file)
+    #     for key, value in clusters.items():
+    #         writer.writerow([key, value])
+    #
+    # return "csv file is complete"
 
     # Previous tries
     # cursor = cnxn.cursor()
@@ -252,3 +270,4 @@ def read_to_user_table(filename):
 # read_to_user_table("users.csv")
 
 
+build_usertable("[LOCALITY1].[dbo].[tweets]")
