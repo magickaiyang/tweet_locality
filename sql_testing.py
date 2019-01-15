@@ -252,6 +252,51 @@ def read_to_user_table(filename):
                 cursor.execute(execute_line)
                 cnxn.commit()
 
+
+
+def get_home_usertable(data_table):
+    # Specify config
+    server = '128.46.137.201'
+    database = 'LOCALITY1'
+    username = 'localityedit'
+    password = 'Edit123'
+    # Connect to database
+    cnxn = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor = cnxn.cursor()
+
+    # Write query and execute
+    query = "SELECT [users],[coordinates] FROM " + data_table
+    print query
+    cursor.execute(query)
+
+    # Start with getting the first row
+    row = cursor.fetchone()
+    print row
+
+    # Initialize the cluster(username as key, coordinates array as value)
+    usertable = {}
+
+    # Parsing each row
+    while row:
+        username = row[0]
+        coordinates = construct_coordinates(row[1])
+
+        home = get_center_in_cluster(coordinates)
+        usertable.update({username: home})
+
+        row = cursor.fetchone()
+
+    cursor = cnxn.cursor()
+
+    for username in usertable.keys():
+        execute_line = "INSERT INTO [LOCALITY1].[localityedit].[user_table] (users, home_lat, home_lon) VALUES ('" + str(username)\
+                           + "', '" + str(usertable[username][0]) + "', '" + str(usertable[username][1]) + "')"
+        print(execute_line)
+        cursor.execute(execute_line)
+        cnxn.commit()
+
+
 # Code to run and test the above functions.
 
 # clusters = {'screenname':[[40.430023, -86.909103], [40.422363, -86.876788], [40.422363, -86.876683],
