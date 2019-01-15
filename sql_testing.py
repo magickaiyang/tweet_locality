@@ -194,6 +194,10 @@ def deduct_home_location():
             print("Not possible!")
 
 
+def construct_coordinates(coor_str):
+    coordinates=ast.literal_eval(coor_str)
+    return coordinates
+
 ####
 # Failed function to read from existing user table csv file
 # and upload data into sql database
@@ -270,4 +274,5 @@ def read_to_user_table(filename):
 # read_to_user_table("users.csv")
 
 
-build_usertable("[LOCALITY1].[dbo].[tweets]")
+#build_usertable("[LOCALITY1].[dbo].[tweets]")
+print(type(construct_coordinates('[[28.39499,-83,4900],[23.492,-32.1111]]')[0][0]))
