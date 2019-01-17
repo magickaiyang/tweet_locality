@@ -16,7 +16,7 @@ from find_boundary import *
 ####
 def check_time(time):
     times = re.split("\W", time)
-    if times[3] <= "04" or times[3] >= "20":
+    if times[3] <= "05" or times[3] >= "20":
         return True
     return False
 
@@ -51,6 +51,7 @@ def build_usertable(data_table):
     # Initialize the cluster(username as key, coordinates array as value)
     clusters = {}
 
+    current_row_index = 0
     # Parsing each row
     while row:
         username = row[0]
@@ -87,14 +88,17 @@ def build_usertable(data_table):
         #     else:
         #         dicti[username]["text"].append(text)
 
+        if current_row_index % 1000 == 0:
+            print 'Current row ' + current_row_index    # occasional print
         row = cursor.fetchone()
+        current_row_index += 1
 
 
     cursor = cnxn.cursor()
 
     for username in clusters.keys():
-        if len(clusters[username]) >= 20:
-            execute_line = "INSERT INTO [LOCALITY1].[localityedit].[user_coordinates] (users, coordinates) VALUES ('" + str(username)\
+        if len(clusters[username]) >= 3:
+            execute_line = "INSERT INTO [LOCALITY1].[localityedit].[user_coordinates_2] (users, coordinates) VALUES ('" + str(username)\
                            + "', '" + str(clusters[username]) + "')"
             print(execute_line)
             cursor.execute(execute_line)
@@ -319,5 +323,5 @@ def get_home_usertable(data_table):
 # read_to_user_table("users.csv")
 
 
-#build_usertable("[LOCALITY1].[dbo].[tweets]")
-print(type(construct_coordinates('[[28.39499,-83,4900],[23.492,-32.1111]]')[0][0]))
+build_usertable("[LOCALITY1].[dbo].[tweets]")
+#print(type(construct_coordinates('[[28.39499,-83,4900],[23.492,-32.1111]]')[0][0]))
