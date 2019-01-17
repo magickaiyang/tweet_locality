@@ -256,8 +256,9 @@ def read_to_user_table(filename):
                 cursor.execute(execute_line)
                 cnxn.commit()
 
-
-
+###########
+# Function to store home location into user table
+###########
 def get_home_usertable(data_table):
     # Specify config
     server = '128.46.137.201'
@@ -287,7 +288,8 @@ def get_home_usertable(data_table):
         coordinates = construct_coordinates(row[1])
 
         home = get_center_in_cluster(coordinates)
-        usertable.update({username: home})
+        if home != None:
+            usertable.update({username: home})
 
         row = cursor.fetchone()
 

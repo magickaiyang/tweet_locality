@@ -22,19 +22,22 @@ def get_centermost_point(cluster):
 
 def get_center_in_cluster(coordinates_list):
     centers = np.array(coordinates_list)
-    eps = 1.5/6371.0088
+    # eps = 1.5/6371.0088
+    eps = 0.0004
 
     # Calling DBScan to build cluster and get the centers
     # Note: need to change min_samples size to get rid of outlier
     # otherwise each outlier could be a cluster
-    db = DBSCAN(eps=eps, min_samples=1).fit(centers)
+    db = DBSCAN(eps=eps, min_samples=3).fit(centers)
 
     # Get the list of clusters
     labels = db.labels_
 
     # print the center index of each points
-    # n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
     # print("cluster number: "+str(n_clusters))
+    if n_clusters == 0:
+        return None
 
     # find the largest cluster
     c = Counter(labels)
