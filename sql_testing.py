@@ -150,53 +150,53 @@ def build_usertable(data_table):
 # Useless tries to deduct duplicate home locations,
 # should be ignored
 ###########
-def deduct_home_location():
-    server = '128.46.137.201'
-    database = 'LOCALITY1'
-    username = 'localityedit'
-    password = 'Edit123'
-    cnxn = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
-    cursor = cnxn.cursor()
-    query = "SELECT [screenname],[lat],[lon] FROM [LOCALITY1].[dbo].[twitter_users]"
-    cursor.execute(query)
-    row = cursor.fetchone()
-
-    user_homes = {}
-    while row:
-        name = row[0]
-        home = [row[1], row[2]]
-        if name not in user_homes.keys():
-            user_homes.update({name:[home]})
-        else:
-            user_homes[name].append(home)
-
-        row = cursor.fetchone()
-
-    print()
-    user_homes_updated = {}
-    for user in user_homes.keys():
-        print(user + " home:" + str(user_homes[user]))
-        center = user_homes[user][0]
-        if len(user_homes[user]) > 2:
-            center = get_center_in_cluster(user_homes[user])
-        if len(user_homes[user]) == 2:
-            first_state = locate_state(user_homes[user][0][0],user_homes[user][0][1], 'C:/_Study/crowdsourcing/tl_2017_us_state/tl_2017_us_state')
-            second_state = locate_state(user_homes[user][1][0], user_homes[user][1][1],
-                                       'C:/_Study/crowdsourcing/tl_2017_us_state/tl_2017_us_state')
-            if first_state == "" and second_state == "":
-                continue
-            if first_state != second_state:
-                print("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO!")
-                print(first_state + " and " + second_state)
-                continue
-
-        if user not in user_homes_updated.keys():
-            user_homes_updated.update({user: [center]})
-
-        else:
-            print("Not possible!")
-
+# def deduct_home_location():
+#     server = '128.46.137.201'
+#     database = 'LOCALITY1'
+#     username = 'localityedit'
+#     password = 'Edit123'
+#     cnxn = pyodbc.connect(
+#         'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+#     cursor = cnxn.cursor()
+#     query = "SELECT [screenname],[lat],[lon] FROM [LOCALITY1].[dbo].[twitter_users]"
+#     cursor.execute(query)
+#     row = cursor.fetchone()
+#
+#     user_homes = {}
+#     while row:
+#         name = row[0]
+#         home = [row[1], row[2]]
+#         if name not in user_homes.keys():
+#             user_homes.update({name:[home]})
+#         else:
+#             user_homes[name].append(home)
+#
+#         row = cursor.fetchone()
+#
+#     print()
+#     user_homes_updated = {}
+#     for user in user_homes.keys():
+#         print(user + " home:" + str(user_homes[user]))
+#         center = user_homes[user][0]
+#         if len(user_homes[user]) > 2:
+#             center = get_center_in_cluster(user_homes[user])
+#         if len(user_homes[user]) == 2:
+#             first_state = locate_state(user_homes[user][0][0],user_homes[user][0][1], 'C:/_Study/crowdsourcing/tl_2017_us_state/tl_2017_us_state')
+#             second_state = locate_state(user_homes[user][1][0], user_homes[user][1][1],
+#                                        'C:/_Study/crowdsourcing/tl_2017_us_state/tl_2017_us_state')
+#             if first_state == "" and second_state == "":
+#                 continue
+#             if first_state != second_state:
+#                 print("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO!")
+#                 print(first_state + " and " + second_state)
+#                 continue
+#
+#         if user not in user_homes_updated.keys():
+#             user_homes_updated.update({user: [center]})
+#
+#         else:
+#             print("Not possible!")
+#
 
 def construct_coordinates(coor_str):
     coordinates=ast.literal_eval(coor_str)
@@ -207,54 +207,54 @@ def construct_coordinates(coor_str):
 # and upload data into sql database
 # Should not use it anymore
 #####
-def read_to_user_table(filename):
-    server = '128.46.137.201'
-    database = 'LOCALITY1'
-    username = 'localityedit'
-    password = 'Edit123'
-    cnxn = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
-    cursor = cnxn.cursor()
-    maxInt = sys.maxsize
-    decrement = True
-    while decrement:
-        # decrease the maxInt value by factor 10
-        # as long as the OverflowError occurs.
-
-        decrement = False
-        try:
-            csv.field_size_limit(maxInt)
-        except OverflowError:
-            maxInt = int(maxInt / 10)
-            decrement = True
-    print "resized"
-    counter = 0
-    with open(filename, "rb") as f:
-        reader = csv.reader(f, delimiter=",")
-        for row in islice(reader, 10723, None):
-        # for row in reader:
-            if counter > 5562:
-                print counter
-            counter += 1
-            screenname = row[0]
-            centers = ast.literal_eval(row[1])["coordinates"]
-            # print type(centers["coordinates"])
-            if len(centers) > 20:
-                # The program will fail after reading a certain number
-                # of data, so we tried to stored the errors in another
-                # file. Still wrong method
-                try:
-                    center = get_center_in_cluster(centers)
-                except:
-                    print row
-                    with open('errors.csv', 'wb') as csv_file:
-                        writer = csv.writer(csv_file)
-                        writer.writerow([row[0], row[1]])
-                    continue
-                execute_line = "INSERT INTO [LOCALITY1].[dbo].[updated_users] (screenname, lat, lon) VALUES ('" + screenname + "', '" + str(
-                    center[0]) + "', '" + str(center[1]) + "')"
-                cursor.execute(execute_line)
-                cnxn.commit()
+# def read_to_user_table(filename):
+#     server = '128.46.137.201'
+#     database = 'LOCALITY1'
+#     username = 'localityedit'
+#     password = 'Edit123'
+#     cnxn = pyodbc.connect(
+#         'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+#     cursor = cnxn.cursor()
+#     maxInt = sys.maxsize
+#     decrement = True
+#     while decrement:
+#         # decrease the maxInt value by factor 10
+#         # as long as the OverflowError occurs.
+#
+#         decrement = False
+#         try:
+#             csv.field_size_limit(maxInt)
+#         except OverflowError:
+#             maxInt = int(maxInt / 10)
+#             decrement = True
+#     print "resized"
+#     counter = 0
+#     with open(filename, "rb") as f:
+#         reader = csv.reader(f, delimiter=",")
+#         for row in islice(reader, 10723, None):
+#         # for row in reader:
+#             if counter > 5562:
+#                 print counter
+#             counter += 1
+#             screenname = row[0]
+#             centers = ast.literal_eval(row[1])["coordinates"]
+#             # print type(centers["coordinates"])
+#             if len(centers) > 20:
+#                 # The program will fail after reading a certain number
+#                 # of data, so we tried to stored the errors in another
+#                 # file. Still wrong method
+#                 try:
+#                     center = get_center_in_cluster(centers)
+#                 except:
+#                     print row
+#                     with open('errors.csv', 'wb') as csv_file:
+#                         writer = csv.writer(csv_file)
+#                         writer.writerow([row[0], row[1]])
+#                     continue
+#                 execute_line = "INSERT INTO [LOCALITY1].[dbo].[updated_users] (screenname, lat, lon) VALUES ('" + screenname + "', '" + str(
+#                     center[0]) + "', '" + str(center[1]) + "')"
+#                 cursor.execute(execute_line)
+#                 cnxn.commit()
 
 ###########
 # Function to store home location into user table
@@ -280,7 +280,9 @@ def get_home_usertable(data_table):
     print row
 
     # Initialize the cluster(username as key, coordinates array as value)
-    usertable = {}
+    # usertable = {}
+
+    cursor2 = cnxn.cursor() # used to write home location to table
 
     # Parsing each row
     while row:
@@ -288,19 +290,17 @@ def get_home_usertable(data_table):
         coordinates = construct_coordinates(row[1])
 
         home = get_center_in_cluster(coordinates)
-        if home != None:
-            usertable.update({username: home})
+        if home is not None:
+            # usertable.update({username: home})
+
+            execute_line = "INSERT INTO [LOCALITY1].[localityedit].[twitter_users] (users, home_lat, home_lon) VALUES ('" + str(
+                username) \
+                           + "', '" + str(coordinates[0]) + "', '" + str(coordinates[1]) + "')"
+            print(execute_line)
+            cursor2.execute(execute_line)
+            cnxn.commit()
 
         row = cursor.fetchone()
-
-    cursor = cnxn.cursor()
-
-    for username in usertable.keys():
-        execute_line = "INSERT INTO [LOCALITY1].[localityedit].[user_table] (users, home_lat, home_lon) VALUES ('" + str(username)\
-                           + "', '" + str(usertable[username][0]) + "', '" + str(usertable[username][1]) + "')"
-        print(execute_line)
-        cursor.execute(execute_line)
-        cnxn.commit()
 
 
 # Code to run and test the above functions.
@@ -325,5 +325,6 @@ def get_home_usertable(data_table):
 # read_to_user_table("users.csv")
 
 
-build_usertable("[LOCALITY1].[dbo].[tweets]")
+#build_usertable("[LOCALITY1].[dbo].[tweets]")
 #print(type(construct_coordinates('[[28.39499,-83,4900],[23.492,-32.1111]]')[0][0]))
+get_home_usertable("[LOCALITY1].[localityedit].[user_coordinates_2]")
