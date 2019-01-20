@@ -1,4 +1,3 @@
-import csv
 from itertools import islice
 import pyodbc
 import ast
@@ -268,7 +267,12 @@ def get_home_usertable(data_table):
     # Connect to database
     cnxn = pyodbc.connect(
         'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+
+    cnxn2 = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor = cnxn.cursor()
+
+    cursor2 = cnxn2.cursor()  # used to write home location to table
 
     # Write query and execute
     query = "SELECT [users],[coordinates] FROM " + data_table
@@ -281,8 +285,6 @@ def get_home_usertable(data_table):
 
     # Initialize the cluster(username as key, coordinates array as value)
     # usertable = {}
-
-    cursor2 = cnxn.cursor() # used to write home location to table
 
     # Parsing each row
     while row:
@@ -298,7 +300,7 @@ def get_home_usertable(data_table):
                            + "', '" + str(coordinates[0]) + "', '" + str(coordinates[1]) + "')"
             print(execute_line)
             cursor2.execute(execute_line)
-            cnxn.commit()
+            cnxn2.commit()
 
         row = cursor.fetchone()
 
