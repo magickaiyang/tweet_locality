@@ -295,9 +295,9 @@ def get_home_usertable(data_table):
         if home is not None:
             # usertable.update({username: home})
 
-            execute_line = "INSERT INTO [LOCALITY1].[localityedit].[twitter_users] (users, home_lat, home_lon) VALUES ('" + str(
+            execute_line = "INSERT INTO [LOCALITY1].[dbo].[twitter_users] (users, home_lat, home_lon) VALUES ('" + str(
                 username) \
-                           + "', '" + str(coordinates[0]) + "', '" + str(coordinates[1]) + "')"
+                           + "', '" + str(home[0]) + "', '" + str(home[1]) + "')"
             print(execute_line)
             cursor2.execute(execute_line)
             cnxn2.commit()
