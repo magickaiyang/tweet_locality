@@ -15,11 +15,6 @@ def get_centermost_point(cluster):
     return centermost_point
 
 
-# Old version of getting the center most point in the cluster
-# Not used anymore. It calculates the geo coordinates as [x,y]s,
-# but the actual geo coordinates are actually points on a sphere,
-# the way to calculate it as [x,y] is wrong
-
 def get_center_in_cluster(coordinates_list):
     centers = np.array(coordinates_list)
     # eps = 1.5/6371.0088
