@@ -266,16 +266,16 @@ def get_home_usertable(data_table):
     password = 'Edit123'
     # Connect to database
     cnxn = pyodbc.connect(
-        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
 
     cnxn2 = pyodbc.connect(
-        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor = cnxn.cursor()
 
     cursor2 = cnxn2.cursor()  # used to write home location to table
 
     # Write query and execute
-    query = "SELECT [users],[coordinates] FROM " + data_table
+    query = "SELECT [users],[coordinates] FROM " + data_table + "where (len([coordinates])) < 250000 Order By users "
     print query
     cursor.execute(query)
 
@@ -289,6 +289,7 @@ def get_home_usertable(data_table):
     # Parsing each row
     while row:
         username = row[0]
+        print username
         coordinates = construct_coordinates(row[1])
 
         home = get_center_in_cluster(coordinates)
