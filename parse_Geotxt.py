@@ -1,7 +1,9 @@
+import pyodbc
+
 import requests
 import json
 
-M_PARAMETER = 'm=gates&q='
+M_PARAMETER = 'm=stanfords&q='
 
 
 # Function to display, ask user's option of geo parsing method,
@@ -21,16 +23,18 @@ def parse_text(line, option):
     elif option == '6' or option == 'stanfordh':
         M_PARAMETER = 'm=stanfordh&q='
     else:
-        print("Invalid input, using default stanfords")
+        # print("Invalid input, using default stanfords")
         M_PARAMETER = 'm=stanfords&q='
 
-    request_line = 'http://geotxt.org/v2/api/geotxt.json?' + M_PARAMETER + line
+    request_line = 'https://www.geovista.psu.edu/geotxt/api/geotxt.json?' + M_PARAMETER + line
+
     print(request_line)
     r = requests.get(request_line)
+    # if r.status_code == 500:
+    #     return None
     data = r.json()
 
     return data
-
 
 # Function to get the toponym of given Geotext json data
 def get_toponym(data):
@@ -71,4 +75,81 @@ def get_location(data):
     #     output_file.write(parse_text(line))
     #
     # output_file.close()
+
+
+####
+# Incomplete
+#######
+def tweets_percentage_in_usertable():
+    server = '128.46.137.201'
+    database = 'LOCALITY1'
+    username = 'localityedit'
+    password = 'Edit123'
+    # Connect to database
+    cnxn = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor = cnxn.cursor()
+
+    cnxn2 = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor2 = cnxn2.cursor()
+
+    # Write query and execute
+    query = "SELECT [users],[home_lat],[home_lon] FROM [LOCALITY1].[dbo].[twitter_users]"
+    cursor.execute(query)
+
+    # Start with getting the first row
+    row = cursor.fetchone()
+
+    while row:
+        screen_name  = row [0]
+        tweets_count = 0
+        place_count = 0
+        query2 = "SELECT * FROM [LOCALITY1].[dbo].[tweets] where screen_name = '" + screen_name + "'"
+        cursor2.execute(query2)
+        row2 = cursor2.fetchone()
+        while row2:
+            tweet_text = row2[4]
+            tweets_count += 1
+            if parse_text(tweet_text, "") != None:
+                place_count += 1
+
+
+def place_name_in_tweets():
+    server = '128.46.137.201'
+    database = 'LOCALITY1'
+    username = 'localityedit'
+    password = 'Edit123'
+    # Connect to database
+    cnxn = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor = cnxn.cursor()
+
+    cnxn2 = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor2 = cnxn2.cursor()
+
+    query = "SELECT * FROM [LOCALITY1].[dbo].[tweets]"
+
+    cursor.execute(query)
+    row = cursor.fetchone()
+
+    while row:
+
+        tweet_text = row[4]
+        id = row[6]
+        geojson_data = parse_text(tweet_text, "")
+        place_count = 0
+        if geojson_data != None:
+            place_count = len(geojson_data['features'])
+
+        query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET place_count = " + str(place_count) + " WHERE id = " + str(id)
+        print query2
+
+        cursor2.execute(query2)
+        cnxn2.commit()
+
+        row = cursor.fetchone()
+
+place_name_in_tweets()
 
