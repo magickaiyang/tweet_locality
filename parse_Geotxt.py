@@ -172,10 +172,10 @@ def tweets_issued_in():
 
     while row:
         latitude = row[2]
-        longtitude = row[3]
+        longitude = row[3]
         id = row[6]
 
-        country = find_boundary.locate_country(longtitude, latitude, 'maps/ne_110m_admin_0_countries')
+        country = find_boundary.locate_country(longitude, latitude, 'maps/ne_110m_admin_0_countries')
 
         query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(id)
         print query2

@@ -1,6 +1,7 @@
 from shapely.geometry import Point, Polygon
 import shapefile
 
+
 # Function to locate Country with latitude and longitude
 # Argument as coordinates longitude, latitude, and file path of shapefile
 # Return value as Country name
@@ -14,11 +15,11 @@ def locate_country(lon, lat, country_fp):
     country_polygons = {}
 
     for i, record in enumerate(crf.records()):
-        # The boarder is at the position of index 3
+        # The border is at the position of index 3
         country_polygons[record[3]] = Polygon(shapes_countries[i].points)
 
     # Make the lat and lon a Point object
-    pt = Point(lat, lon)
+    pt = Point(lon, lat)    # appears that longitude first, latitude second
     this_country = ""
     for c, p in country_polygons.iteritems():
         # Check if p contains the point
