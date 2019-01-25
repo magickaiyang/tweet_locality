@@ -9,12 +9,12 @@ from find_boundary import *
 
 
 ###
-# Function to check if the time is between 8 pm to 5 am
+# Function to check if the time is between 8 pm to 6 am
 # Takes string argument as time
 # Returns false if it is not between the period
 ####
 def check_time(time):
-    times = re.split("\W", time)
+    times = re.split("\W", time)    # split time string with regular expression, condition: non alphanumeric
     if times[3] <= "05" or times[3] >= "20":
         return True
     return False

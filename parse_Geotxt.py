@@ -1,7 +1,7 @@
 import pyodbc
-
 import requests
 import json
+import find_boundary
 
 M_PARAMETER = 'm=stanfords&q='
 
@@ -115,7 +115,7 @@ def tweets_percentage_in_usertable():
                 place_count += 1
 
 
-def place_name_in_tweets():
+def place_count_in_tweets():
     server = '128.46.137.201'
     database = 'LOCALITY1'
     username = 'localityedit'
@@ -151,5 +151,40 @@ def place_name_in_tweets():
 
         row = cursor.fetchone()
 
-place_name_in_tweets()
+def tweets_issued_in():
+    server = '128.46.137.201'
+    database = 'LOCALITY1'
+    username = 'localityedit'
+    password = 'Edit123'
+    # Connect to database
+    cnxn = pyodbc.connect(
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor = cnxn.cursor()
+
+    cnxn2 = pyodbc.connect(
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor2 = cnxn2.cursor()
+
+    query = "SELECT * FROM [LOCALITY1].[dbo].[tweets]"
+
+    cursor.execute(query)
+    row = cursor.fetchone()
+
+    while row:
+        latitude = row[2]
+        longtitude = row[3]
+        id = row[6]
+
+        country = find_boundary.locate_country(longtitude, latitude, 'maps/ne_110m_admin_0_countries')
+
+        query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(id)
+        print query2
+        cursor2.execute(query2)
+        cnxn2.commit()
+
+        row = cursor.fetchone()
+
+
+# place_count_in_tweets()
+tweets_issued_in()
 
