@@ -16,7 +16,7 @@ def locate_country(lon, lat, country_fp):
 
     for i, record in enumerate(crf.records()):
         # The border is at the position of index 3
-        country_polygons[record[3]] = Polygon(shapes_countries[i].points)
+        country_polygons[record[1]] = Polygon(shapes_countries[i].points)
 
     # Make the lat and lon a Point object
     pt = Point(lon, lat)    # appears that longitude first, latitude second

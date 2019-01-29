@@ -175,16 +175,16 @@ def tweets_issued_in():
         longitude = row[3]
         id = row[6]
 
-        country = find_boundary.locate_country(longitude, latitude, 'maps/ne_110m_admin_0_countries')
-
-        query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(id)
-        print query2
-        cursor2.execute(query2)
-        cnxn2.commit()
+        country = find_boundary.locate_country(longitude, latitude, 'maps/world_countries_2017')
+        print('latitude: ', str(latitude), 'longitude:', str(longitude), 'country: ', country)
+        # query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(id)
+        # print query2
+        # cursor2.execute(query2)
+        # cnxn2.commit()
 
         row = cursor.fetchone()
 
 
 # place_count_in_tweets()
-tweets_issued_in()
-
+#tweets_issued_in()
+print(find_boundary.locate_country(-80.2358746, 26.224614, 'maps/world_countries_2017'))
