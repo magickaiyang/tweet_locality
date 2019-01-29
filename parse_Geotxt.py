@@ -80,7 +80,7 @@ def get_location(data):
 ####
 # Incomplete
 #######
-def tweets_percentage_in_usertable():
+def tweets_percentage_of_place_in_usertable():
     server = '128.46.137.201'
     database = 'LOCALITY1'
     username = 'localityedit'
@@ -94,26 +94,32 @@ def tweets_percentage_in_usertable():
         'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor2 = cnxn2.cursor()
 
+    cnxn3 = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor3 = cnxn3.cursor()
+
     # Write query and execute
-    query = "SELECT [users],[home_lat],[home_lon] FROM [LOCALITY1].[dbo].[twitter_users]"
+    query = "SELECT [users],[tweet_count] FROM [LOCALITY1].[dbo].[twitter_users]"
     cursor.execute(query)
 
     # Start with getting the first row
     row = cursor.fetchone()
 
     while row:
-        screen_name  = row [0]
-        tweets_count = 0
+        screen_name  = row[0]
+        tweets_count = row[1]
         place_count = 0
         query2 = "SELECT * FROM [LOCALITY1].[dbo].[tweets] where screen_name = '" + screen_name + "'"
         cursor2.execute(query2)
         row2 = cursor2.fetchone()
         while row2:
             tweet_text = row2[4]
-            tweets_count += 1
-            if parse_text(tweet_text, "") != None:
+            if parse_text(tweet_text, "") is not None:
                 place_count += 1
 
+        percentage = float(place_count)/tweets_count
+        query3 = "UPDATE [LOCALITY1].[dbo].[twitter_users] SET percent_place = " + str(percentage) + " WHERE users = '" + screen_name + "'"
+        cursor3.execute(query3)
 
 def place_count_in_tweets():
     server = '128.46.137.201'
