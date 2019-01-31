@@ -21,7 +21,7 @@ def locate_country(lon, lat, country_fp):
     # Make the lat and lon a Point object
     pt = Point(lon, lat)    # appears that longitude first, latitude second
     this_country = ""
-    for c, p in country_polygons.iteritems():
+    for c, p in country_polygons.items():
         # Check if p contains the point
         if p.contains(pt):
             this_country = c
