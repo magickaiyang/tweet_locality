@@ -57,6 +57,12 @@ def get_location(data):
     return result
 
 
+def get_country_code(data):
+    result = []
+    for places in data['features']:
+        result.append(places['properties']['countryCode'])
+    return set(result)
+
 # Main function to test the functions above, used the input.txt file
 # def main():
     # input_file = open("input.txt", "r")
@@ -80,9 +86,9 @@ def get_location(data):
 
 
 ####
-# Incomplete
+# get percentage of tweets with place/ total number of tweets
 #######
-def tweets_percentage_in_usertable():
+def tweets_percentage_of_place_in_usertable():
     server = '128.46.137.201'
     database = 'LOCALITY1'
     username = 'localityedit'
@@ -96,26 +102,33 @@ def tweets_percentage_in_usertable():
         'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor2 = cnxn2.cursor()
 
+    cnxn3 = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor3 = cnxn3.cursor()
+
     # Write query and execute
-    query = "SELECT [users],[home_lat],[home_lon] FROM [LOCALITY1].[dbo].[twitter_users]"
+    query = "SELECT [users],[tweet_count] FROM [LOCALITY1].[dbo].[twitter_users]"
     cursor.execute(query)
 
     # Start with getting the first row
     row = cursor.fetchone()
 
     while row:
-        screen_name  = row [0]
-        tweets_count = 0
+        screen_name  = row[0]
+        tweets_count = row[1]
         place_count = 0
         query2 = "SELECT * FROM [LOCALITY1].[dbo].[tweets] where screen_name = '" + screen_name + "'"
         cursor2.execute(query2)
         row2 = cursor2.fetchone()
         while row2:
             tweet_text = row2[4]
-            tweets_count += 1
-            if parse_text(tweet_text, "") != None:
+            if parse_text(tweet_text, "") is not None:
                 place_count += 1
 
+        percentage = float(place_count)/tweets_count
+        query3 = "UPDATE [LOCALITY1].[dbo].[twitter_users] SET percent_place = " + str(percentage) + " WHERE users = '" + screen_name + "'"
+        cursor3.execute(query3)
+        row = cursor.fetchone()
 
 def place_count_in_tweets():
     server = '128.46.137.201'
@@ -152,6 +165,55 @@ def place_count_in_tweets():
         cnxn2.commit()
 
         row = cursor.fetchone()
+
+
+def percentage_about_home_country():
+
+    server = '128.46.137.201'
+    database = 'LOCALITY1'
+    username = 'localityedit'
+    password = 'Edit123'
+    # Connect to database
+    cnxn = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor = cnxn.cursor()
+
+    cnxn2 = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor2 = cnxn2.cursor()
+
+    cnxn3 = pyodbc.connect(
+        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    cursor3 = cnxn3.cursor()
+
+    # Write query and execute
+    query = "SELECT [users],[tweet_count],[country] FROM [LOCALITY1].[dbo].[twitter_users]"
+    cursor.execute(query)
+
+    # Start with getting the first row
+    row = cursor.fetchone()
+
+    while row:
+        screen_name  = row[0]
+        tweets_count = row[1]
+        home_country = row[2]
+        place_count = 0
+        query2 = "SELECT * FROM [LOCALITY1].[dbo].[tweets] where screen_name = '" + screen_name + "'"
+        cursor2.execute(query2)
+        row2 = cursor2.fetchone()
+        while row2:
+            tweet_text = row2[4]
+            data = parse_text(tweet_text, "")
+            if data is not None:
+                countries = get_country_code(data)
+                if home_country not in countries or len(countries) > 1:
+                    place_count += 1
+
+        percentage = float(place_count)/tweets_count
+        query3 = "UPDATE [LOCALITY1].[dbo].[twitter_users] SET about_home = " + str(percentage) + " WHERE users = '" + screen_name + "'"
+        cursor3.execute(query3)
+        row = cursor.fetchone()
+
 
 def tweets_issued_in():
     server = '128.46.137.201'
