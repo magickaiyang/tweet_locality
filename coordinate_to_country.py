@@ -47,18 +47,26 @@ def locate_country(lon, lat, sql_table_id):
     country = ''
 
     xmin, xmax, ymin, ymax = pt.GetEnvelope()
-    # print(len(list(index.intersection((xmin, xmax, ymin, ymax)))))
-    for fid in list(index.intersection((xmin, xmax, ymin, ymax))):
-        feature = layer.GetFeature(fid)
-        geometry = feature.GetGeometryRef()
-        if pt.Intersects(geometry):
-            country = feature.GetFieldAsString(field_id)
-            break
+    possible_countries = list(index.intersection((xmin, xmax, ymin, ymax)))
+
+    # shortcut, if only one country left
+    if len(possible_countries) == 1:
+        country = layer.GetFeature(possible_countries[0]).GetFieldAsString(field_id)
+
+    else:
+        for fid in possible_countries:
+            feature = layer.GetFeature(fid)
+            geometry = feature.GetGeometryRef()
+            if pt.Intersects(geometry):
+                country = feature.GetFieldAsString(field_id)
+                break
+
+
 
     query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(sql_table_id)
-    print(query2 + '\n' +str(multiprocessing.current_process()))
+    print(query2)
     cursor2.execute(query2)
     cnxn2.commit()
 
 
-#locate_country(-82.44074796, 38.42133044, 2)
+#locate_country(-80.2358746, 26.224614, 1)

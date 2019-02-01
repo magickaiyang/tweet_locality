@@ -236,15 +236,15 @@ def tweets_issued_in():
     row = cursor.fetchone()
 
     # one process per core
-    pool = multiprocessing.Pool(processes=12)
+    pool = multiprocessing.Pool()
 
     while row:
         latitude = row[2]
         longitude = row[3]
         index = row[6]
 
-        while len(pool._cache) >= 14:
-            time.sleep(0.5)
+        while len(pool._cache) >= multiprocessing.cpu_count():
+            time.sleep(0.1)
 
         pool.apply_async(coordinate_to_country.locate_country, args=(longitude, latitude, index))
 
