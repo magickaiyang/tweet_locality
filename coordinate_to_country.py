@@ -1,6 +1,7 @@
 # multiprocessing enabled, each process will hold a connection to the sql server
 import ogr
 import pyodbc
+import rtree
 import multiprocessing
 
 driver = ogr.GetDriverByName('ESRI Shapefile')
@@ -18,6 +19,14 @@ point_ref = ogr.osr.SpatialReference()
 point_ref.ImportFromEPSG(4326)
 coordinate_transformer = ogr.osr.CoordinateTransformation(point_ref, geo_ref)
 
+# Rtree spatial index
+index = rtree.index.Index(interleaved=False)
+for fid in range(0, layer.GetFeatureCount()):
+        feature = layer.GetFeature(fid)
+        geometry = feature.GetGeometryRef()
+        xmin, xmax, ymin, ymax = geometry.GetEnvelope()
+        index.insert(fid, (xmin, xmax, ymin, ymax))
+
 server = '128.46.137.201'
 database = 'LOCALITY1'
 username = 'localityedit'
@@ -27,7 +36,7 @@ cnxn2 = pyodbc.connect(
 cursor2 = cnxn2.cursor()
 
 
-def locate_country(lon, lat, index):
+def locate_country(lon, lat, sql_table_id):
     # Transform incoming longitude/latitude to the shapefile's projection
     [lon, lat, z] = coordinate_transformer.TransformPoint(lon, lat)
 
@@ -35,19 +44,21 @@ def locate_country(lon, lat, index):
     pt = ogr.Geometry(ogr.wkbPoint)
     pt.SetPoint_2D(0, lon, lat)
 
-    # Set up a spatial filter such that the only features we see when we
-    # loop through "layer" are those which overlap the point defined above
-    layer.SetSpatialFilter(pt)
-
     country = ''
-    # will execute only once
-    for entry in layer:
-        country = entry.GetFieldAsString(field_id)
 
-    # print('latitude: ', str(latitude), 'longitude:', str(longitude), 'country: ', country)
-    query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(index)
-    print(query2 + str(multiprocessing.current_process()))
+    xmin, xmax, ymin, ymax = pt.GetEnvelope()
+    # print(len(list(index.intersection((xmin, xmax, ymin, ymax)))))
+    for fid in list(index.intersection((xmin, xmax, ymin, ymax))):
+        feature = layer.GetFeature(fid)
+        geometry = feature.GetGeometryRef()
+        if pt.Intersects(geometry):
+            country = feature.GetFieldAsString(field_id)
+            break
+
+    query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(sql_table_id)
+    print(query2 + '\n' +str(multiprocessing.current_process()))
     cursor2.execute(query2)
     cnxn2.commit()
 
-# print(locate_country(-82.44074796, 38.42133044))
+
+#locate_country(-82.44074796, 38.42133044, 2)

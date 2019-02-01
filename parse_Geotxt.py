@@ -243,7 +243,7 @@ def tweets_issued_in():
         longitude = row[3]
         index = row[6]
 
-        while len(pool._cache) >= 13:
+        while len(pool._cache) >= 14:
             time.sleep(0.5)
 
         pool.apply_async(coordinate_to_country.locate_country, args=(longitude, latitude, index))
