@@ -1,9 +1,10 @@
 import pyodbc
 import requests
 import json
-
-import coordinate_to_location
-import find_boundary
+import multiprocessing
+import time
+import coordinate_to_country
+# import find_boundary
 
 M_PARAMETER = 'm=stanfords&q='
 
@@ -234,20 +235,22 @@ def tweets_issued_in():
     cursor.execute(query)
     row = cursor.fetchone()
 
+    # one process per core
+    pool = multiprocessing.Pool(processes=12)
+
     while row:
         latitude = row[2]
         longitude = row[3]
-        id = row[6]
+        index = row[6]
 
-        country = coordinate_to_location.locate_country(longitude, latitude)
-        # print('latitude: ', str(latitude), 'longitude:', str(longitude), 'country: ', country)
-        query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(id)
-        print(query2)
-        cursor2.execute(query2)
-        cnxn2.commit()
+        while len(pool._cache) >= 13:
+            time.sleep(0.5)
+
+        pool.apply_async(coordinate_to_country.locate_country, args=(longitude, latitude, index))
 
         row = cursor.fetchone()
 
 
-# place_count_in_tweets()
-tweets_issued_in()
+#
+if __name__ == '__main__':
+    tweets_issued_in()

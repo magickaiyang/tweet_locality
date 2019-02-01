@@ -1,4 +1,7 @@
+# multiprocessing enabled, each process will hold a connection to the sql server
 import ogr
+import pyodbc
+import multiprocessing
 
 driver = ogr.GetDriverByName('ESRI Shapefile')
 shapefile = driver.Open("maps/world_countries_2017.shp")  # open the shapefile
@@ -15,8 +18,16 @@ point_ref = ogr.osr.SpatialReference()
 point_ref.ImportFromEPSG(4326)
 coordinate_transformer = ogr.osr.CoordinateTransformation(point_ref, geo_ref)
 
+server = '128.46.137.201'
+database = 'LOCALITY1'
+username = 'localityedit'
+password = 'Edit123'
+cnxn2 = pyodbc.connect(
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+cursor2 = cnxn2.cursor()
 
-def locate_country(lon, lat):
+
+def locate_country(lon, lat, index):
     # Transform incoming longitude/latitude to the shapefile's projection
     [lon, lat, z] = coordinate_transformer.TransformPoint(lon, lat)
 
@@ -28,11 +39,15 @@ def locate_country(lon, lat):
     # loop through "layer" are those which overlap the point defined above
     layer.SetSpatialFilter(pt)
 
+    country = ''
     # will execute only once
     for entry in layer:
-        return entry.GetFieldAsString(field_id)
+        country = entry.GetFieldAsString(field_id)
 
-    # no hit
-    return ''
+    # print('latitude: ', str(latitude), 'longitude:', str(longitude), 'country: ', country)
+    query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET issued_in = '" + country + "' WHERE id = " + str(index)
+    print(query2 + str(multiprocessing.current_process()))
+    cursor2.execute(query2)
+    cnxn2.commit()
 
-#print(locate_country(-82.44074796, 38.42133044))
+# print(locate_country(-82.44074796, 38.42133044))
