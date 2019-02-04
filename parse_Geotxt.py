@@ -96,15 +96,15 @@ def tweets_percentage_of_place_in_usertable():
     password = 'Edit123'
     # Connect to database
     cnxn = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor = cnxn.cursor()
 
     cnxn2 = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor2 = cnxn2.cursor()
 
     cnxn3 = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor3 = cnxn3.cursor()
 
     # Write query and execute
@@ -131,6 +131,7 @@ def tweets_percentage_of_place_in_usertable():
         cursor3.execute(query3)
         row = cursor.fetchone()
 
+
 def place_count_in_tweets():
     server = '128.46.137.201'
     database = 'LOCALITY1'
@@ -138,11 +139,11 @@ def place_count_in_tweets():
     password = 'Edit123'
     # Connect to database
     cnxn = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor = cnxn.cursor()
 
     cnxn2 = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor2 = cnxn2.cursor()
 
     query = "SELECT * FROM [LOCALITY1].[dbo].[tweets]"
@@ -151,12 +152,11 @@ def place_count_in_tweets():
     row = cursor.fetchone()
 
     while row:
-
         tweet_text = row[4]
         id = row[6]
         geojson_data = parse_text(tweet_text, "")
         place_count = 0
-        if geojson_data != None:
+        if geojson_data is not None:
             place_count = len(geojson_data['features'])
 
         query2 = "UPDATE [LOCALITY1].[dbo].[tweets] SET place_count = " + str(place_count) + " WHERE id = " + str(id)
@@ -176,19 +176,19 @@ def percentage_about_home_country():
     password = 'Edit123'
     # Connect to database
     cnxn = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor = cnxn.cursor()
 
     cnxn2 = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor2 = cnxn2.cursor()
 
     cnxn3 = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     cursor3 = cnxn3.cursor()
 
     # Write query and execute
-    query = "SELECT [users],[tweet_count],[country] FROM [LOCALITY1].[dbo].[twitter_users]"
+    query = "SELECT [users],[tweet_count],[home_country] FROM [LOCALITY1].[dbo].[twitter_users]"
     cursor.execute(query)
 
     # Start with getting the first row
