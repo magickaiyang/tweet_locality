@@ -32,7 +32,7 @@ database = 'LOCALITY1'
 username = 'localityedit'
 password = 'Edit123'
 cnxn2 = pyodbc.connect(
-        'DRIVER={ODBC Driver 13 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        'DRIVER={PostgreSQL Unicode(x64)};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
 cursor2 = cnxn2.cursor()
 
 
