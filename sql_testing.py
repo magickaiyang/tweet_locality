@@ -5,7 +5,20 @@ import sys
 from detect_bot import *
 from dbscan_test import *
 import re
-from find_boundary import *
+
+
+#############
+# Function to get week day by from input of year, month, date
+# return 0 as Sunday, 1 Monday, etc
+#############
+def getDay(year, month, date):
+    if month == 1 or month == 2:
+        year -= 1
+    D = year%100
+    C = year/100
+    day = (date + ((13 * ((month+21)%12 + 1) - 1)/5) + D + D/4 + C/4 - 2 * C) % 7
+
+    return day
 
 
 ###
@@ -15,9 +28,18 @@ from find_boundary import *
 ####
 def check_time(time):
     times = re.split("\W", time)    # split time string with regular expression, condition: non alphanumeric
+    year = int(times[0])
+    month = int(times[1])
+    date = int(times[2])
+
+
     if times[3] <= "05" or times[3] >= "20":
-        return True
+        day = getDay(year, month, date)
+        if day <= 4 and day >= 1:
+            return True
     return False
+
+
 
 
 ####
@@ -288,16 +310,16 @@ def get_home_usertable(data_table):
 
     # Parsing each row
     while row:
-        username = row[0]
-        print username
+        screenname = row[0]
+        print screenname
         coordinates = construct_coordinates(row[1])
 
-        home = get_center_in_cluster(coordinates)
+        home = get_center_in_cluster(coordinates, screenname, "[LOCALITY1].[dbo].[tweets]")
         if home is not None:
             # usertable.update({username: home})
 
             execute_line = "INSERT INTO [LOCALITY1].[dbo].[twitter_users] (users, home_lat, home_lon) VALUES ('" + str(
-                username) \
+                screenname) \
                            + "', '" + str(home[0]) + "', '" + str(home[1]) + "')"
             print(execute_line)
             cursor2.execute(execute_line)
@@ -330,4 +352,4 @@ def get_home_usertable(data_table):
 
 #build_usertable("[LOCALITY1].[dbo].[tweets]")
 #print(type(construct_coordinates('[[28.39499,-83,4900],[23.492,-32.1111]]')[0][0]))
-get_home_usertable("[LOCALITY1].[localityedit].[user_coordinates_2]")
+# get_home_usertable("[LOCALITY1].[localityedit].[user_coordinates_2]")
