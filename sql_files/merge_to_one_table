@@ -1,0 +1,44 @@
+CREATE TABLE tweets
+	AS(
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2013_01_03
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2013_04_06
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2013_07_09
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2013_10_12
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2014_01_03
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2014_10_12
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2015_01_03
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2015_04_06
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2015_07_09
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2015_10_12
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2016_01_03
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2016_04_06
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2016_07_09
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2016_10_12
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2017_01_03
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2017_04_06
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2017_07_09
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2017_10_12
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2018_01_03
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2018_04_06
+		UNION ALL
+		SELECT user_id, tweet_id, created_at, geo_lat, geo_long, tweet_text FROM tweet_us_2018_07_09
+	);
