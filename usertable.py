@@ -2,10 +2,13 @@ import csv
 import pyodbc
 import json
 import re
+import pandas as pd
 
+from datetime import datetime
 from dbscan_test import get_center_in_cluster
 from find_boundary import *
 from parse_Geotxt import *
+from stdbscan import *
 
 
 #############
@@ -22,7 +25,7 @@ def getDay(year, month, date):
 
 
 # Function to connect to database, return cnxn
-def connect_database(server, database, username, password, driver):
+def connect_database(server, username, password, database, driver):
     cnxn = pyodbc.connect(
         'DRIVER={' + driver + '};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
     return cnxn
@@ -51,7 +54,7 @@ def add_home_coor(tweet_table, user_table):
     insert_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
     insert_cursor = insert_cnxn.cursor()
 
-    user_query = "SELECT [user_id] FROM " + tweet_table
+    user_query = "SELECT user_id FROM " + user_table
     user_cursor.execute(user_query)
 
     # Start with getting the first row
@@ -60,25 +63,52 @@ def add_home_coor(tweet_table, user_table):
     # Parsing each row
     while row:
         coords = []
+        lats = []
+        lons = []
+        date_times = []
 
         user_id = row[0]
-        tweets_query = "SELECT [created_time], [geo_lat], [geo_long] from " + tweet_table + " WHERE user_id = " + str(user_id)
+        tweets_query = "SELECT created_at, geo_lat, geo_long from " + tweet_table + " WHERE user_id = " + str(user_id)
         tweets_cursor.execute(tweets_query)
         tweet = tweets_cursor.fetchone()
 
         while tweet:
-            if check_time(tweet[0]):
-                coords.append([tweet[0], tweet[1]])
-                tweet = tweets_cursor.fetchone()
+            date_times.append(tweet[0])
+            lats.append(tweet[1])
+            lons.append(tweet[2])
+            tweet = tweets_cursor.fetchone()
 
-        home = get_center_in_cluster(coords, user_id, tweet_table)
-        if home is not None:
+            # if check_time(tweet[0]):
+            #     coords.append([tweet[1], tweet[2]])
+            #     tweet = tweets_cursor.fetchone()
 
-            insert_query = "Update " + user_table + " SET home_lat = '" + str(home[0]) + "', home_lon = '" + str(home[1]) + "' WHERE user_id = " + str(user_id)
-            insert_cursor.execute(insert_query)
-            insert_cnxn.commit()
+        data = {'latitude': lats, 'longitude': lons, 'date_time': date_times}
+        df = pd.DataFrame(data)
+        print(df)
+        st_dbscan = STDBSCAN(col_lat='latitude', col_lon='longitude',
+                             col_time='date_time', spatial_threshold=500,
+                             temporal_threshold=600, min_neighbors=5)
+
+        result_t600 = st_dbscan.run(df)
+
+        # -1 in cluster column denotes noise
+        print(result_t600)
+
+
+        # home = get_center_in_cluster(coords, user_id, tweet_table)
+        #
+        #
+        # if home is not None:
+        #
+        #     insert_query = "Update " + user_table + " SET home_lat = '" + str(home[0]) + "', home_lon = '" + str(home[1]) + "' WHERE user_id = " + str(user_id)
+        #     insert_cursor.execute(insert_query)
+        #     insert_cnxn.commit()
 
         row = user_cursor.fetchone()
+
+
+add_home_coor("tweets", "users")
+
 
 
 def add_home_country_toSQL(user_table, shapefile_path):
