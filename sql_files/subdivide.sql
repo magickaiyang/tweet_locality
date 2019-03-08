@@ -1,5 +1,5 @@
 -- Drop primary key constraint to allow multiple entries for the same country
-ALTER TABLE world_countries_2017 DROP CONSTRAINT world_countries_2017_pkey
+ALTER TABLE world_countries_2017 DROP CONSTRAINT world_countries_2017_pkey;
 
 -- Subdivide complex geometries, North America countries only
 with complex_areas_to_subdivide as (
