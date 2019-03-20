@@ -48,7 +48,7 @@ def add_home_coor(tweet_table, user_table):
     user_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
     user_cursor = user_cnxn.cursor()
 
-    tweets_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
+    tweets_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', '')
     tweets_cursor = tweets_cnxn.cursor()
 
     insert_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')

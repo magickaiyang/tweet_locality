@@ -1,4 +1,5 @@
-select countries.cntry_name, tweet.geo_lat, tweet.geo_long, tweet.tweet_text
-	from world_countries_2017 as countries, tweet_us_2013_01_03 as tweet
-	where ST_Intersects(countries.geom, ST_SetSRID(ST_MakePoint(tweet.geo_long, tweet.geo_lat),4326))
-	limit 1000;
+SELECT tweets.user_id, tweets.tweet_id, tweets.created_at, tweets.geo_lat, tweets.geo_long, tweets.tweet_text, tweets.source, world_countries_2017.cntry_name
+	FROM tweets
+	LEFT OUTER JOIN world_countries_2017
+	ON ST_Intersects(world_countries_2017.geom, ST_SetSRID(ST_MakePoint(tweets.geo_long, tweets.geo_lat),4326))
+	;
