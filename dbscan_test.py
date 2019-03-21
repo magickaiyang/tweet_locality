@@ -7,24 +7,28 @@ import numpy as np
 from collections import Counter
 from shapely.geometry import MultiPoint
 from geopy.distance import great_circle
+from usertable import connect_database
 
 
-def find_time_period_of_cluster(coordinates, screenname, data_table):
-    # Specify config
-    server = '128.46.137.201'
-    database = 'LOCALITY1'
-    username = 'localityedit'
-    password = 'Edit123'
-    # Connect to database
-    cnxn = pyodbc.connect(
-        'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+def find_time_period_of_cluster(coordinates, user_id, data_table):
+    # # Specify config
+    # server = '128.46.137.201'
+    # database = 'LOCALITY1'
+    # username = 'localityedit'
+    # password = 'Edit123'
+    # # Connect to database
+    # cnxn = pyodbc.connect(
+    #     'DRIVER={SQL Server Native Client 10.0};SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+    # cursor = cnxn.cursor()
+
+    cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
     cursor = cnxn.cursor()
 
     earliest = [99999999, 999999]
     latest = [00000000, 000000]
     for coordinate in coordinates:
     # Write query and execute
-        query = "SELECT [created_at] FROM " + data_table + "where screenname = '" + screenname + "' and where geo_lat = " + coordinate[0] + " and where geo_lon = " + coordinate[1]
+        query = "SELECT [created_at] FROM " + data_table + "where user_id = '" + user_id + "' and where geo_lat = " + coordinate[0] + " and where geo_lon = " + coordinate[1]
 
         cursor.execute(query)
         row = cursor.fetchone()
@@ -52,7 +56,7 @@ def get_centermost_point(cluster):
     return centermost_point
 
 
-def get_center_in_cluster(coordinates_list, screenname, data_table):
+def get_center_in_cluster(coordinates_list, user_id, data_table):
     centers = np.array(coordinates_list)
     # eps = 1.5/6371.0088
     eps = 0.0004
@@ -89,14 +93,14 @@ def get_center_in_cluster(coordinates_list, screenname, data_table):
         largest_cluster_index = largest_clusters[0]
 
     else:
-        longest_period = [0,0]
+        longest_period = [0, 0]
         for cluster_index in largest_clusters:
             temp_cluster = []
 
             for i in range(len(centers)):
                 if labels[i] == cluster_index:
                     temp_cluster.append(centers[i].tolist())
-            period = find_time_period_of_cluster(list(set(temp_cluster)), screenname, data_table)
+            period = find_time_period_of_cluster(list(set(temp_cluster)), user_id, data_table)
             if longest_period[0] < period[0] or (longest_period[0] == period[0] and longest_period[1] < period[1]):
                 longest_period = period
                 largest_cluster_index = cluster_index

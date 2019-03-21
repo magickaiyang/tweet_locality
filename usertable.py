@@ -3,12 +3,14 @@ import pyodbc
 import json
 import re
 import pandas as pd
+import holidays
+import datetime
 
 from datetime import datetime
 from dbscan_test import get_center_in_cluster
 from find_boundary import *
 from parse_Geotxt import *
-from stdbscan import *
+# from stdbscan import *
 
 
 #############
@@ -37,10 +39,13 @@ def check_time(time):
     month = int(times[1])
     date = int(times[2])
 
+
+
     if times[3] <= "05" or times[3] >= "20":
         day = getDay(year, month, date)
         if day <= 4 and day >= 1:
-            return True
+            if datetime.date(year, month, date) not in holidays.US():
+                return True
     return False
 
 
@@ -48,7 +53,7 @@ def add_home_coor(tweet_table, user_table):
     user_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
     user_cursor = user_cnxn.cursor()
 
-    tweets_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', '')
+    tweets_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
     tweets_cursor = tweets_cnxn.cursor()
 
     insert_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
@@ -78,37 +83,30 @@ def add_home_coor(tweet_table, user_table):
             lons.append(tweet[2])
             tweet = tweets_cursor.fetchone()
 
-            # if check_time(tweet[0]):
-            #     coords.append([tweet[1], tweet[2]])
-            #     tweet = tweets_cursor.fetchone()
+            if check_time(tweet[0]):
+                coords.append([tweet[1], tweet[2]])
+                tweet = tweets_cursor.fetchone()
 
-        data = {'latitude': lats, 'longitude': lons, 'date_time': date_times}
-        df = pd.DataFrame(data)
-        print(df)
-        st_dbscan = STDBSCAN(col_lat='latitude', col_lon='longitude',
-                             col_time='date_time', spatial_threshold=500,
-                             temporal_threshold=600, min_neighbors=5)
-
-        result_t600 = st_dbscan.run(df)
-
-        # -1 in cluster column denotes noise
-        print(result_t600)
-
-
-        # home = get_center_in_cluster(coords, user_id, tweet_table)
+        # data = {'latitude': lats, 'longitude': lons, 'date_time': date_times}
+        # df = pd.DataFrame(data)
+        # print(df)
+        # st_dbscan = STDBSCAN(col_lat='latitude', col_lon='longitude',
+        #                      col_time='date_time', spatial_threshold=500,
+        #                      temporal_threshold=600, min_neighbors=5)
         #
+        # result_t600 = st_dbscan.run(df)
         #
-        # if home is not None:
-        #
-        #     insert_query = "Update " + user_table + " SET home_lat = '" + str(home[0]) + "', home_lon = '" + str(home[1]) + "' WHERE user_id = " + str(user_id)
-        #     insert_cursor.execute(insert_query)
-        #     insert_cnxn.commit()
+        # # -1 in cluster column denotes noise
+        # print(result_t600)
+
+        home = get_center_in_cluster(coords, user_id, tweet_table)
+        if home is not None:
+
+            insert_query = "Update " + user_table + " SET home_lat = '" + str(home[0]) + "', home_lon = '" + str(home[1]) + "' WHERE user_id = " + str(user_id)
+            insert_cursor.execute(insert_query)
+            insert_cnxn.commit()
 
         row = user_cursor.fetchone()
-
-
-add_home_coor("tweets", "users")
-
 
 
 def add_home_country_toSQL(user_table, shapefile_path):
@@ -144,7 +142,7 @@ def add_tweets_number_toSQL(user_table, tweet_table):
     user_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
     tweet_cnxn = connect_database('128.46.137.96', 'localityteam', '123456', 'locality', 'PostgreSQL Unicode(x64)')
     user_cursor = user_cnxn.cursor()
-    user_cursor2 = tweet_cnxn.cursor()
+    tweet_cursor = tweet_cnxn.cursor()
 
     # Write query and execute
     user_query = "SELECT [user_id] FROM " + str(user_table)
@@ -159,8 +157,8 @@ def add_tweets_number_toSQL(user_table, tweet_table):
         insert_query = "Update " + str(user_table) + " SET tweet_count = (SELECT COUNT(*) " \
                  "FROM " + str(tweet_table) + " where user_id = '" + user_id + "' )" +\
                  "WHERE user_id = '" + user_id + "'"
-        user_cursor.execute(user_query)
-        user_cnxn.commit()
+        tweet_cursor.execute(insert_query)
+        tweet_cnxn.commit()
 
         row = user_cursor.fetchone()
 
