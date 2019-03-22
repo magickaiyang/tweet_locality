@@ -16,7 +16,7 @@ def check_time(time):
     # month = int(times[1])
     # date = int(times[2])
 
-    if time.hour <= "05" or time.hour >= "20":
+    if time.hour <= 5 or time.hour >= 20:
         day = time.weekday()
         if 4 >= day >= 1:
             if time not in holidays.US():
