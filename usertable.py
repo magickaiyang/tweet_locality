@@ -1,5 +1,6 @@
 import pyodbc
 import holidays
+import collections
 from dbscan_test import get_center_in_cluster
 
 
@@ -16,7 +17,7 @@ def check_time(time):
     # month = int(times[1])
     # date = int(times[2])
 
-    if time.hour <= 5 or time.hour >= 20:
+    if time.hour <= 23 or time.hour >= 20:
         day = time.weekday()
         if 4 >= day >= 1:
             if time not in holidays.US():
@@ -45,28 +46,38 @@ def add_home_coor(tweet_table, user_table):
         print("User id: " + str(row[0]))
         coords = []
         date_times = []
+        texts = []
 
         user_id = row[0]
-        tweets_query = "SELECT created_at, geo_lat, geo_long from " + tweet_table +\
+        tweets_query = "SELECT created_at, geo_lat, geo_long from, tweet_text " + tweet_table +\
                        " WHERE user_id = " + str(user_id) + ' ORDER BY created_at ASC'
         tweets_cursor.execute(tweets_query)
         tweet = tweets_cursor.fetchone()
 
         while tweet:
+            texts.append(tweet[3])
             if check_time(tweet[0]):
                 coords.append([tweet[1], tweet[2]])
                 date_times.append(tweet[0])
 
             tweet = tweets_cursor.fetchone()
 
-        if len(coords) >= 3:
-            home = get_center_in_cluster(coords, user_id, tweet_table)
+        # check if it contains more than 10% duplicate
+        counter = collections.Counter(texts)
+        sum = 0
+        for c in counter.values():
+            if c > 1:
+               sum += c
+        if sum < 0.1 * sum(counter.values()):
 
-            if home is not None:
-                insert_query = "UPDATE " + user_table + " SET home_lat = '" + str(home[0]) + \
-                               "', home_lon = '" + str(home[1]) + "' WHERE user_id = " + str(user_id)
-                insert_cursor.execute(insert_query)
-                insert_cnxn.commit()
+            if len(coords) >= 3:
+                home = get_center_in_cluster(coords, user_id, tweet_table)
+
+                if home is not None:
+                    insert_query = "UPDATE " + user_table + " SET home_lat = '" + str(home[0]) + \
+                                   "', home_lon = '" + str(home[1]) + "' WHERE user_id = " + str(user_id)
+                    insert_cursor.execute(insert_query)
+                    insert_cnxn.commit()
 
         row = user_cursor.fetchone()
 
@@ -246,6 +257,7 @@ def usertable_to_csv(data_table):
             row = cursor.fetchone()
 
 
-add_home_coor("tweets_2014_10_to_2015_04", "users_2014_10_to_2015_04")
+# add_home_coor("tweets_2014_10_to_2015_04", "users_2014_10_to_2015_04")
 
 # add_home_coor("tweets_2015_05_to_2017_12", "users_2015_05_to_2017_12")
+

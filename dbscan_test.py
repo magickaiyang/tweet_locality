@@ -53,10 +53,12 @@ def get_centermost_point(cluster):
 def get_center_in_cluster(coordinates_list, user_id, data_table):
     centers = np.array(coordinates_list)
     # approximately 56m
-    eps = 0.0004
+    eps = 0.056/6371
+    # eps = 0.0004
 
     # Calling DBScan to build cluster and get the centers
-    db = DBSCAN(eps=eps, min_samples=3).fit(centers)
+    # db = DBSCAN(eps=eps, min_samples=3).fit(centers)
+    db = DBSCAN(eps=eps, min_samples=3, algorithm='ball_tree', metric='haversine').fit(np.radians(centers))
 
     # Get the list of clusters
     labels = db.labels_
