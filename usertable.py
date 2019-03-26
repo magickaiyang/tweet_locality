@@ -49,7 +49,7 @@ def add_home_coor(tweet_table, user_table):
         texts = []
 
         user_id = row[0]
-        tweets_query = "SELECT created_at, geo_lat, geo_long from, tweet_text " + tweet_table +\
+        tweets_query = "SELECT created_at, geo_lat, geo_long, tweet_text FROM " + tweet_table + \
                        " WHERE user_id = " + str(user_id) + ' ORDER BY created_at ASC'
         tweets_cursor.execute(tweets_query)
         tweet = tweets_cursor.fetchone()
@@ -64,11 +64,11 @@ def add_home_coor(tweet_table, user_table):
 
         # check if it contains more than 10% duplicate
         counter = collections.Counter(texts)
-        sum = 0
+        total_count = 0
         for c in counter.values():
             if c > 1:
-               sum += c
-        if sum < 0.1 * sum(counter.values()):
+                total_count += c
+        if total_count < 0.1 * sum(counter.values()):
 
             if len(coords) >= 3:
                 home = get_center_in_cluster(coords, user_id, tweet_table)
@@ -257,7 +257,6 @@ def usertable_to_csv(data_table):
             row = cursor.fetchone()
 
 
-# add_home_coor("tweets_2014_10_to_2015_04", "users_2014_10_to_2015_04")
+add_home_coor("tweets_2014_10_to_2015_04", "users_2014_10_to_2015_04")
 
 # add_home_coor("tweets_2015_05_to_2017_12", "users_2015_05_to_2017_12")
-
